@@ -9,14 +9,11 @@ public class ProductDetailsPage extends BaseProductPage {
         super(driver);
     }
 
-    private final By productDetailsNameSelector = By.cssSelector("[data-test='inventory-item-name']");
-    private final By productDetailsPriceSelector = By.cssSelector("[data-test='inventory-item-price']");
-
     public String getProductName() {
-        return getText(productDetailsNameSelector);
+        return getText(productNameSelector);
     }
 
     public double getProductPrice() {
-        return Double.parseDouble(getText(productDetailsPriceSelector).replace("$", ""));
+        return Double.parseDouble(getText(productPriceSelector).replace("$", ""));
     }
 }

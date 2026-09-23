@@ -6,9 +6,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ProductsOverviewPage extends BaseProductPage {
 
@@ -16,10 +15,10 @@ public class ProductsOverviewPage extends BaseProductPage {
     private final By sortingDropdownSelector = By.className("product_sort_container");
     private final By shoppingCartSelector = By.cssSelector("a[data-test='shopping-cart-link']");
     private final By shoppingCartBadgeSelector = By.cssSelector(".shopping_cart_badge");
-    private final By removeButtonSelector = By.xpath("//button[contains(text(), 'Remove')]");
-    private final By addButtonSelector = By.xpath("//button[contains(text(), 'Add to cart')]");
-    private final By logoutButtonSelector = By.xpath("//a[contains(text(), 'Logout')]");
-    private final By burgerButtonSelector = By.xpath("//button[contains(text(), 'Open Menu')]");
+    private final By removeButtonSelector = By.xpath("//button[text()='Remove']");
+    private final By addButtonSelector = By.xpath("//button[text()='Add to cart']");
+    private final By logoutButtonSelector = By.xpath("//a[text()='Logout']");
+    private final By burgerButtonSelector = By.xpath("//button[text()='Open Menu']");
 
     public ProductsOverviewPage(WebDriver driver) {
         super(driver);
@@ -45,12 +44,18 @@ public class ProductsOverviewPage extends BaseProductPage {
         return new ProductDetailsPage(driver).waitForPageLoad();
     }
 
-    public double getProductPriceByName(String productName) {
-        String priceLocator = String.format(
-                "//div[text()='%s']/ancestor::div[@class='inventory_item_description']//div[@data-test='inventory-item-price']",
-                productName
-        );
-        return Double.parseDouble(getText(By.xpath(priceLocator)).replace("$", ""));
+    public  Double getProductPriceByName(String productName) {
+        List<WebElement> productElementsList = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(productDescriptionSelector));
+        Map<String, Double>  productsMap=  productElementsList.stream()
+                .collect(Collectors.toMap(
+                        product -> product.findElement(productNameSelector).getText(),
+                        product -> Double.parseDouble(
+                                product.findElement(productPriceSelector).getText().replace("$", "")))
+                );
+        if (!productsMap.containsKey(productName)) {
+            throw new NoSuchElementException("Product not found: " + productName);
+        }
+        return productsMap.get(productName);
     }
 
     public ProductsOverviewPage applySortingFilter(String sortingMethodName) {

@@ -12,6 +12,7 @@ public class BaseProductPage extends BasePage {
 
     protected final By productPriceSelector = By.cssSelector(".inventory_item_price");
     protected final By productNameSelector = By.cssSelector(".inventory_item_name");
+    protected final By productDescriptionSelector = By.cssSelector(".inventory_item_description");
 
     public List<String> getProductPricesWithCurrency() {
         return getTexts(productPriceSelector);
