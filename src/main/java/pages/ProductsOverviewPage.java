@@ -24,6 +24,12 @@ public class ProductsOverviewPage extends BaseProductPage {
         super(driver);
     }
 
+    private List<WebElement> getProductElementsList() {
+        return wait.until(
+                ExpectedConditions.visibilityOfAllElementsLocatedBy(productDescriptionSelector)
+        );
+    }
+
     public String getPageTitle() {
         return getText(titleSelector);
     }
@@ -39,21 +45,21 @@ public class ProductsOverviewPage extends BaseProductPage {
     }
 
     public ProductDetailsPage clickRandomProductLink(String randomProduct) {
-        String randomProductSelector = String.format("//div[@data-test='inventory-item-name' and text()='%s']", randomProduct);
+        String randomProductSelector = String.format("//div[text()='%s']", randomProduct);
         click(By.xpath(randomProductSelector));
         return new ProductDetailsPage(driver).waitForPageLoad();
     }
 
-    public  Double getProductPriceByName(String productName) {
-        List<WebElement> productElementsList = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(productDescriptionSelector));
-        Map<String, Double>  productsMap=  productElementsList.stream()
+    public Double getProductPriceByName(String productName) {
+        Map<String, Double> productsMap = getProductElementsList().stream()
                 .collect(Collectors.toMap(
                         product -> product.findElement(productNameSelector).getText(),
                         product -> Double.parseDouble(
-                                product.findElement(productPriceSelector).getText().replace("$", "")))
-                );
+                                product.findElement(productPriceSelector).getText().replace("$", "")
+                        )
+                ));
         if (!productsMap.containsKey(productName)) {
-            throw new NoSuchElementException("Product not found: " + productName);
+            throw new NoSuchElementException("Product '" + productName + "' not found in the catalog!");
         }
         return productsMap.get(productName);
     }
@@ -66,9 +72,13 @@ public class ProductsOverviewPage extends BaseProductPage {
     }
 
     public ProductsOverviewPage addProductToTheCartByPrice(double price) {
-        By addToCartLocator = By.xpath(
-                String.format(Locale.US, "//div[@class='inventory_item_price' and contains(.,'$%.2f')]/following-sibling::button", price));
-        click(addToCartLocator);
+        for (WebElement product : getProductElementsList()) {
+            double productPrice = Double.parseDouble(
+                    product.findElement(productPriceSelector).getText().replace("$", ""));
+            if (productPrice==price){
+                product.findElement(By.tagName("button")).click();
+            }
+        }
         return this;
     }
 
