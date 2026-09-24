@@ -11,14 +11,14 @@ import java.util.stream.Collectors;
 
 public class ProductsOverviewPage extends BaseProductPage {
 
-    private final By titleSelector = By.cssSelector(".title");
-    private final By sortingDropdownSelector = By.className("product_sort_container");
-    private final By shoppingCartSelector = By.cssSelector("a[data-test='shopping-cart-link']");
-    private final By shoppingCartBadgeSelector = By.cssSelector(".shopping_cart_badge");
+    private final By titleSelector = By.cssSelector("[data-test ='title']");
+    private final By sortingDropdownSelector = By.cssSelector("[data-test= 'product-sort-container']");
+    private final By shoppingCartSelector = By.cssSelector("[data-test='shopping-cart-link']");
+    private final By shoppingCartBadgeSelector = By.cssSelector("[data-test='shopping-cart-badge']");
     private final By removeButtonSelector = By.xpath("//button[text()='Remove']");
     private final By addButtonSelector = By.xpath("//button[text()='Add to cart']");
-    private final By logoutButtonSelector = By.xpath("//a[text()='Logout']");
-    private final By burgerButtonSelector = By.xpath("//button[text()='Open Menu']");
+    private final By logoutButtonSelector = By.id("logout_sidebar_link");
+    private final By burgerButtonSelector = By.id("react-burger-menu-btn");;
 
     public ProductsOverviewPage(WebDriver driver) {
         super(driver);

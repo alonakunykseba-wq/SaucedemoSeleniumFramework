@@ -9,8 +9,8 @@ public class CheckoutCompletePage extends BasePage {
         super(driver);
     }
 
-    private final By completeHeaderSelector = By.cssSelector("h2[data-test='complete-header']");
-    private final By completeTextSelector = By.cssSelector("div[data-test='complete-text']");
+    private final By completeHeaderSelector = By.cssSelector("[data-test='complete-header']");
+    private final By completeTextSelector = By.cssSelector("[data-test='complete-text']");
 
     public String getCompleteOrderHeader() {
         return getText(completeHeaderSelector);

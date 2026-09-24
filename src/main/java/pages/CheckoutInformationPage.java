@@ -4,11 +4,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 public class CheckoutInformationPage extends BasePage {
-    private final By firstNameFieldSelector = By.cssSelector("input[data-test='firstName']");
-    private final By lastNameFieldSelector = By.cssSelector("input[data-test='lastName']");
-    private final By postalCodeSelector = By.cssSelector("input[data-test='postalCode']");
-    private final By continueButtonSelector = By.cssSelector("input[data-test='continue']");
-    private final By errorSelector = By.cssSelector("h3[data-test = 'error']");
+    private final By firstNameFieldSelector = By.id("first-name");
+    private final By lastNameFieldSelector = By.id("last-name");
+    private final By postalCodeSelector = By.id("postal-code");
+    private final By continueButtonSelector = By.id("continue");
+    private final By errorSelector = By.cssSelector("[data-test = 'error']");
 
     public CheckoutInformationPage(WebDriver driver) {
         super(driver);
