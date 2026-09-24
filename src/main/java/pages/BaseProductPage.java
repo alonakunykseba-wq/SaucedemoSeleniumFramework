@@ -10,8 +10,10 @@ public class BaseProductPage extends BasePage {
         super(driver);
     }
 
-    protected final By productPriceSelector = By.cssSelector(".inventory_item_price");
-    protected final By productNameSelector = By.cssSelector(".inventory_item_name");
+    protected final By productPriceSelector = By.cssSelector("[data-test='inventory-item-price']");
+    protected final By productNameSelector = By.cssSelector("[data-test='inventory-item-name']");
+    protected final By productDescriptionSelector = By.cssSelector("[data-test='inventory-item-description']");
+
 
     public List<String> getProductPricesWithCurrency() {
         return getTexts(productPriceSelector);

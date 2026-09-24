@@ -47,10 +47,6 @@ public class BasePage {
     }
 
 
-
-
-
-    @SuppressWarnings("unchecked")
     public <T extends BasePage> T waitForPageLoad() {
         wait.until(driver -> ((JavascriptExecutor) driver)
                 .executeScript("return document.readyState").equals("complete"));

@@ -7,8 +7,8 @@ import java.util.List;
 
 public class ShoppingCartPage extends BaseProductPage {
 
-    private final By checkoutSelector = By.cssSelector("button[data-test='checkout']");
-    private final By productNameSelector = By.cssSelector(".inventory_item_name");
+    private final By checkoutSelector = By.id("checkout");
+    private final By productNameSelector = By.cssSelector("[data-test ='inventory-item-name']");
 
     public ShoppingCartPage(WebDriver driver) {
         super(driver);

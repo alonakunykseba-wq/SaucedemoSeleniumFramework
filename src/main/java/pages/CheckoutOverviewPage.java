@@ -6,10 +6,10 @@ import org.openqa.selenium.WebDriver;
 import java.util.List;
 
 public class CheckoutOverviewPage extends BaseProductPage {
-    private final By itemTotalSelector = By.cssSelector("div[data-test='subtotal-label']");
-    private final By taxPriceSelector = By.cssSelector("div[data-test='tax-label']");
-    private final By totalSelector = By.cssSelector("div[data-test='total-label']");
-    private final By finishButton = By.cssSelector("button[data-test='finish']");
+    private final By itemTotalSelector = By.cssSelector("[data-test='subtotal-label']");
+    private final By taxPriceSelector = By.cssSelector("[data-test='tax-label']");
+    private final By totalSelector = By.cssSelector("[data-test='total-label']");
+    private final By finishButton = By.id("finish");
 
     public CheckoutOverviewPage(WebDriver driver) {
         super(driver);

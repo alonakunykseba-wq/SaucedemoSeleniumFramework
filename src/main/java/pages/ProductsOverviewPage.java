@@ -6,23 +6,28 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ProductsOverviewPage extends BaseProductPage {
 
-    private final By titleSelector = By.cssSelector(".title");
-    private final By sortingDropdownSelector = By.className("product_sort_container");
-    private final By shoppingCartSelector = By.cssSelector("a[data-test='shopping-cart-link']");
-    private final By shoppingCartBadgeSelector = By.cssSelector(".shopping_cart_badge");
-    private final By removeButtonSelector = By.xpath("//button[contains(text(), 'Remove')]");
-    private final By addButtonSelector = By.xpath("//button[contains(text(), 'Add to cart')]");
-    private final By logoutButtonSelector = By.xpath("//a[contains(text(), 'Logout')]");
-    private final By burgerButtonSelector = By.xpath("//button[contains(text(), 'Open Menu')]");
+    private final By titleSelector = By.cssSelector("[data-test ='title']");
+    private final By sortingDropdownSelector = By.cssSelector("[data-test= 'product-sort-container']");
+    private final By shoppingCartSelector = By.cssSelector("[data-test='shopping-cart-link']");
+    private final By shoppingCartBadgeSelector = By.cssSelector("[data-test='shopping-cart-badge']");
+    private final By removeButtonSelector = By.xpath("//button[text()='Remove']");
+    private final By addButtonSelector = By.xpath("//button[text()='Add to cart']");
+    private final By logoutButtonSelector = By.id("logout_sidebar_link");
+    private final By burgerButtonSelector = By.id("react-burger-menu-btn");;
 
     public ProductsOverviewPage(WebDriver driver) {
         super(driver);
+    }
+
+    private List<WebElement> getProductElementsList() {
+        return wait.until(
+                ExpectedConditions.visibilityOfAllElementsLocatedBy(productDescriptionSelector)
+        );
     }
 
     public String getPageTitle() {
@@ -40,17 +45,23 @@ public class ProductsOverviewPage extends BaseProductPage {
     }
 
     public ProductDetailsPage clickRandomProductLink(String randomProduct) {
-        String randomProductSelector = String.format("//div[@data-test='inventory-item-name' and text()='%s']", randomProduct);
+        String randomProductSelector = String.format("//div[text()='%s']", randomProduct);
         click(By.xpath(randomProductSelector));
         return new ProductDetailsPage(driver).waitForPageLoad();
     }
 
-    public double getProductPriceByName(String productName) {
-        String priceLocator = String.format(
-                "//div[text()='%s']/ancestor::div[@class='inventory_item_description']//div[@data-test='inventory-item-price']",
-                productName
-        );
-        return Double.parseDouble(getText(By.xpath(priceLocator)).replace("$", ""));
+    public Double getProductPriceByName(String productName) {
+        Map<String, Double> productsMap = getProductElementsList().stream()
+                .collect(Collectors.toMap(
+                        product -> product.findElement(productNameSelector).getText(),
+                        product -> Double.parseDouble(
+                                product.findElement(productPriceSelector).getText().replace("$", "")
+                        )
+                ));
+        if (!productsMap.containsKey(productName)) {
+            throw new NoSuchElementException("Product '" + productName + "' not found in the catalog!");
+        }
+        return productsMap.get(productName);
     }
 
     public ProductsOverviewPage applySortingFilter(String sortingMethodName) {
@@ -61,9 +72,13 @@ public class ProductsOverviewPage extends BaseProductPage {
     }
 
     public ProductsOverviewPage addProductToTheCartByPrice(double price) {
-        By addToCartLocator = By.xpath(
-                String.format(Locale.US, "//div[@class='inventory_item_price' and contains(.,'$%.2f')]/following-sibling::button", price));
-        click(addToCartLocator);
+        for (WebElement product : getProductElementsList()) {
+            double productPrice = Double.parseDouble(
+                    product.findElement(productPriceSelector).getText().replace("$", ""));
+            if (productPrice==price){
+                product.findElement(By.tagName("button")).click();
+            }
+        }
         return this;
     }
 

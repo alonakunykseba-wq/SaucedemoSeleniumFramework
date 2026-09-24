@@ -9,10 +9,10 @@ public class LoginPage extends BasePage {
         super(driver);
     }
 
-    private final By usernameField = By.cssSelector("[placeholder=Username]");
-    private final By passwordField = By.cssSelector("[placeholder=Password]");
-    private final By loginButton = By.cssSelector("#login-button");
-    private final By errorMessage = By.cssSelector("[data-test=\"error\"]");
+    private final By usernameField = By.cssSelector("[data-test='username']");
+    private final By passwordField = By.cssSelector("[data-test='password']");
+    private final By loginButton = By.id("login-button");
+    private final By errorMessage = By.cssSelector("[data-test='error']");
 
     public ProductsOverviewPage logInSuccessfully(String username, String password) {
         enterText(usernameField, username);
